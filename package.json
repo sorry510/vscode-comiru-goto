@@ -1,0 +1,77 @@
+{
+  "name": "comiru-goto",
+  "displayName": "comiru-goto",
+  "description": "comiru-goto",
+  "version": "0.0.1",
+  "publisher": "sorry510",
+  "engines": {
+    "vscode": "^1.51.0"
+  },
+  "icon": "images/icon.png",
+  "repository": "https://github.com/sorry510/vscode-comiru-goto.git",
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:php",
+    "onLanguage:blade",
+    "onLanguage:html",
+    "onUri",
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "goto configuration",
+      "properties": {
+        "comiru_goto.maxLinesCount": {
+          "type": "integer",
+          "default": 3000,
+          "description": "Maximum number of scanning rows"
+        },
+        "comiru_goto.pathViews": {
+          "type": "string",
+          "default": "/views",
+          "description": "Root path to the views folder"
+        },
+        "comiru_goto.pathJs": {
+          "type": "string",
+          "default": "/assets",
+          "description": "Root path to the views folder"
+        },
+        "comiru_goto.pathCss": {
+          "type": "string",
+          "default": "/assets",
+          "description": "Root path to the views folder"
+        },
+        "comiru_goto.pathRoutes": {
+          "type": "string",
+          "default": "/src/App/Silex/Routes",
+          "description": "Root path to the routes folder"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.51.0",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "@vscode/test-electron": "^2.1.5",
+    "eslint": "^8.20.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.0.0",
+    "typescript": "^4.7.4"
+  }
+}
