@@ -2,6 +2,7 @@
 
 support render goto view
 support view goto html, js, css
+support m.xx goto model
 
 1. ctrl(cmd) + click to the file.
 2. hover show the link to the file.

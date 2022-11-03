@@ -75,6 +75,25 @@ export default class LinkProvider implements vsDocumentLinkProvider {
                     }
                 }
             }
+
+            const modelResult = lineText.match(util.MODEL_REG);
+            if (modelResult !== null) {
+                for (let item of modelResult) {
+                    const prefixStr = "app['m.";
+                    const pathText = item.substring(prefixStr.length).replace(/\"|\'/g, ''); // 去除单双引号和前缀
+                    const filename = pathText.split('_')
+                        .map(item => item.slice(0, 1).toUpperCase() + item.slice(1))
+                        .join('') + '.php'; // 蛇形改为驼峰格式
+                    let file = util.getFilePath(filename, doc, 'model');
+
+                    if (file !== null) {
+                        let start = new Position(line.lineNumber, lineText.indexOf(item) + prefixStr.length - 2);
+                        let end = start.translate(0, pathText.length + 2);
+                        let documentLink = new DocumentLink(new Range(start, end), file);
+                        documentLinks.push(documentLink);
+                    };
+                }
+            }
             index++;
         }
 

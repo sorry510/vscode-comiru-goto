@@ -45,10 +45,10 @@
           "default": "/assets",
           "description": "Root path to the views folder"
         },
-        "comiru_goto.pathRoutes": {
+        "comiru_goto.pathModel": {
           "type": "string",
-          "default": "/src/App/Silex/Routes",
-          "description": "Root path to the routes folder"
+          "default": "/src/App/Model",
+          "description": "Root path to the models folder"
         }
       }
     }

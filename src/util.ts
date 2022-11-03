@@ -20,6 +20,7 @@ export function getFilePath(text: string, document: TextDocument, type: string) 
     'view': 'pathViews',
     'css': 'pathCss',
     'js': 'pathJs',
+    'model': 'pathModel',
   };
 
   if (!dirHash[type]) {
@@ -75,4 +76,4 @@ export const VIEW_REG = /app-\>render\((['"])[^'"]*\1/g;
 
 export const HTML_REG = /(['"])[^'"]*\.[html|css|js][^'"]*\1/g;
 
-export const ROUTE_REG = /app-\>render\((['"])[^'"]*\1/g;
+export const MODEL_REG = /app\[(['"])m\.[^'"]*\1/g;
