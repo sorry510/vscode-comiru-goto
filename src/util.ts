@@ -76,4 +76,6 @@ export const VIEW_REG = /app-\>render\((['"])[^'"]*\1/g;
 
 export const HTML_REG = /(['"])[^'"]*\.[html|css|js][^'"]*\1/g;
 
-export const MODEL_REG = /app\[(['"])m\.[^'"]*\1/g;
+export const MODEL_KEY_REG = /app\[(['"])m\.[^'"]*\1/g;
+
+export const MODEL_ORM_KEY_REG = /app\[(['"])orm\.[^'"]*\1/g;

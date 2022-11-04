@@ -76,19 +76,82 @@ export default class LinkProvider implements vsDocumentLinkProvider {
                 }
             }
 
-            const modelResult = lineText.match(util.MODEL_REG);
+            const modelResult = lineText.match(util.MODEL_KEY_REG);
             if (modelResult !== null) {
+                // 不符合规则的手动指定
+                const modelMap: any = {
+                    'posts': 'Post.php',
+                    'tags': 'Tag.php',
+                    'replies': 'Reply.php',
+                    'bbs_teacher_post_votes': 'BBSTeacherPostVotes.php',
+                    'bbs_teacher_reply_favors': 'BBSTeacherReplyFavors.php',
+                    'g_reports': 'GroupReports.php',
+                    'g_report_students': 'GroupReportStudents.php',
+                    'g_report_textbooks': 'GroupReportTextbooks.php',
+                    'g_report_attachments': 'GroupReportAttachments.php',
+                    'g_report_comments': 'GroupReportComments.php',
+                    'grouped_school_comas': 'OnlineSchoolPlan.php',
+                    'online_plan_applications': 'OnlinePlanApplication.php',
+                    'trial_enterprise_orders': 'TrialEnterpriseOrder.php',
+                    'enterprises': 'Enterprise.php',
+                    'company_school_accounting_configs': 'CompanySchoolAccountingConfig.php',
+                };
                 for (let item of modelResult) {
                     const prefixStr = "app['m.";
                     const pathText = item.substring(prefixStr.length).replace(/\"|\'/g, ''); // 去除单双引号和前缀
-                    const filename = pathText.split('_')
-                        .map(item => item.slice(0, 1).toUpperCase() + item.slice(1))
-                        .join('') + '.php'; // 蛇形改为驼峰格式
+
+                    let filename = '';
+                    if (modelMap[pathText]) {
+                        filename = modelMap[pathText];
+                    } else {
+                        filename = pathText.split('_')
+                            .map(item => item.slice(0, 1).toUpperCase() + item.slice(1))
+                            .join('') + '.php'; // 蛇形改为驼峰格式
+                    }
+                   
                     let file = util.getFilePath(filename, doc, 'model');
 
                     if (file !== null) {
                         let start = new Position(line.lineNumber, lineText.indexOf(item) + prefixStr.length - 2);
                         let end = start.translate(0, pathText.length + 2);
+                        let documentLink = new DocumentLink(new Range(start, end), file);
+                        documentLinks.push(documentLink);
+                    };
+                }
+            }
+
+            const modelOrmResult = lineText.match(util.MODEL_ORM_KEY_REG);
+            if (modelOrmResult !== null) {
+                // 手动指定
+                const modelMap: any = {
+                    'teachers': 'ORM/Teacher.php',
+                    'teacher_students': 'ORM/TeacherStudent.php',
+                    'users': 'ORM/User.php',
+                    'user_auths': 'ORM/UserAuth.php',
+                    'user_types': 'ORM/UserType.php',
+                    'student_groups': 'ORM/StudentGroup.php',
+                    'student_veritrans': 'ORM/StudentVeritrans.php',
+                    'teacher_applies': 'ORM/TeacherApply.php',
+                    'seats': 'ORM/Seat.php',
+                    'seat_students': 'ORM/SeatStudent.php',
+                    'add_coma_details': 'ORM/AddComaDetail.php',
+                };
+                for (let item of modelOrmResult) {
+                    const prefixStr = "app['orm.";
+                    const pathText = item.substring(prefixStr.length).replace(/\"|\'/g, ''); // 去除单双引号和前缀
+
+                    let filename = '';
+                    if (modelMap[pathText]) {
+                        filename = modelMap[pathText];
+                    } else {
+                        continue;
+                    }
+                   
+                    let file = util.getFilePath(filename, doc, 'model');
+
+                    if (file !== null) {
+                        let start = new Position(line.lineNumber, lineText.indexOf(item) + prefixStr.length - 4);
+                        let end = start.translate(0, pathText.length + 4);
                         let documentLink = new DocumentLink(new Range(start, end), file);
                         documentLinks.push(documentLink);
                     };
