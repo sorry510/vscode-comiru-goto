@@ -7,7 +7,8 @@ import {
     DocumentLink,
     workspace,
     Position,
-    Range
+    Range,
+    Uri
 } from "vscode";
 import * as util from '../util';
 
@@ -27,12 +28,12 @@ export default class LinkProvider implements vsDocumentLinkProvider {
                 for (let item of viewResult) {
                     const prefixStr = 'app->render(';
                     const pathText = item.substring(prefixStr.length).replace(/\"|\'/g, ''); // 去除单双引号和前缀
-                    let file = util.getFilePath(pathText, doc, 'view');
+                    let result = util.getFilePath(pathText, doc, 'view');
 
-                    if (file !== null) {
+                    if (result !== null) {
                         let start = new Position(line.lineNumber, lineText.indexOf(item) + prefixStr.length);
                         let end = start.translate(0, pathText.length);
-                        let documentLink = new DocumentLink(new Range(start, end), file);
+                        let documentLink = new DocumentLink(new Range(start, end), Uri.file(result.targetPath));
                         documentLinks.push(documentLink);
                     };
                 }
@@ -61,11 +62,11 @@ export default class LinkProvider implements vsDocumentLinkProvider {
                         if (pathText.startsWith('/')) {
                             pathText = pathText.substring(1);
                         }
-                        let file = util.getFilePath(pathText, doc, type);
-                        if (file !== null) {
+                        let result = util.getFilePath(pathText, doc, type);
+                        if (result !== null) {
                             let start = new Position(line.lineNumber, lineText.indexOf(pathText));
                             let end = start.translate(0, pathText.length);
-                            let documentLink = new DocumentLink(new Range(start, end), file);
+                            let documentLink = new DocumentLink(new Range(start, end), Uri.file(result.targetPath));
                             // if words has link，new link is invalid, so i use hover instead
                             // example vscode in html file built-in link will make this extension invalid
                             //  <script src="{{ asset('/js/test.js') }}"></script>
@@ -100,6 +101,14 @@ export default class LinkProvider implements vsDocumentLinkProvider {
                     const prefixStr = "app['m.";
                     const pathText = item.substring(prefixStr.length).replace(/\"|\'/g, ''); // 去除单双引号和前缀
 
+                    const findIndex = lineText.indexOf(pathText) + pathText.length;
+                    const methodText = lineText.substring(findIndex);
+                    const matchMethod = methodText.match(/]-\>(.+)\(/);
+                    let methodName = '';
+                    if (matchMethod && matchMethod.length >= 2) {
+                        methodName = matchMethod[1];
+                    }
+
                     let filename = '';
                     if (modelMap[pathText]) {
                         filename = modelMap[pathText];
@@ -109,14 +118,23 @@ export default class LinkProvider implements vsDocumentLinkProvider {
                             .join('') + '.php'; // 蛇形改为驼峰格式
                     }
                    
-                    let file = util.getFilePath(filename, doc, 'model');
+                    let result: any = util.getFilePath(filename, doc, 'model', methodName);
 
-                    if (file !== null) {
+                    if (result) {
+                        if (result.line && result.targetPath) {
+                            if (result.line > -1) {
+                                const methodFile = Uri.parse(`${result.targetPath}#${result.line}`);
+                                let start = new Position(line.lineNumber, lineText.indexOf(methodName));
+                                let end = start.translate(0, methodName.length);
+                                let documentLink = new DocumentLink(new Range(start, end), methodFile);
+                                documentLinks.push(documentLink);
+                            }
+                        }
                         let start = new Position(line.lineNumber, lineText.indexOf(item) + prefixStr.length - 2);
                         let end = start.translate(0, pathText.length + 2);
-                        let documentLink = new DocumentLink(new Range(start, end), file);
+                        let documentLink = new DocumentLink(new Range(start, end), Uri.file(result.targetPath));
                         documentLinks.push(documentLink);
-                    };
+                    }
                 }
             }
 
@@ -147,12 +165,12 @@ export default class LinkProvider implements vsDocumentLinkProvider {
                         continue;
                     }
                    
-                    let file = util.getFilePath(filename, doc, 'model');
+                    let result = util.getFilePath(filename, doc, 'model');
 
-                    if (file !== null) {
+                    if (result !== null) {
                         let start = new Position(line.lineNumber, lineText.indexOf(item) + prefixStr.length - 4);
                         let end = start.translate(0, pathText.length + 4);
-                        let documentLink = new DocumentLink(new Range(start, end), file);
+                        let documentLink = new DocumentLink(new Range(start, end), Uri.file(result.targetPath));
                         documentLinks.push(documentLink);
                     };
                 }

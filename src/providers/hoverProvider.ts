@@ -6,6 +6,7 @@ import {
     Position,
     ProviderResult,
     Hover,
+    Uri,
     MarkdownString
 } from "vscode";
 import * as util from '../util';
@@ -41,9 +42,9 @@ export default class HoverProvider implements vsHoverProvider {
           if (pathText.startsWith('/')) {
             pathText = pathText.substring(1);
           }
-          let file = util.getFilePath(pathText, doc, type);
-          if (file !== null) {
-            const text = file.toString();
+          let result = util.getFilePath(pathText, doc, type);
+          if (result !== null) {
+            const text = Uri.file(result.targetPath).toString();
             return new Hover(new MarkdownString(`[comiru goto: ${pathText}](${text})`));
           };
         }
