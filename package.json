@@ -2,7 +2,7 @@
   "name": "comiru-goto",
   "displayName": "comiru-goto",
   "description": "comiru-goto",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "sorry510",
   "engines": {
     "vscode": "^1.51.0"
@@ -49,6 +49,11 @@
           "type": "string",
           "default": "/src/App/Model",
           "description": "Root path to the models folder"
+        },
+        "comiru_goto.pathRouter": {
+          "type": "string",
+          "default": "/src/App/Silex/Routes",
+          "description": "Root path to the router folder"
         }
       }
     }

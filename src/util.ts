@@ -22,6 +22,7 @@ export function getFilePath(text: string, document: TextDocument, type: string, 
     'css': 'pathCss',
     'js': 'pathJs',
     'model': 'pathModel',
+    'router': 'pathRouter',
   };
 
   if (!dirHash[type]) {
@@ -33,6 +34,11 @@ export function getFilePath(text: string, document: TextDocument, type: string, 
     if (!fs.existsSync(filePath)) {
       // 目录不存在，跳过
       continue;
+    }
+
+    if (type === 'router') {
+      // 遍历路由文件夹
+      return findInDir(filePath, text);
     }
 
     if (text.startsWith('css')) {
@@ -49,6 +55,14 @@ export function getFilePath(text: string, document: TextDocument, type: string, 
     if (fs.existsSync(targetPath)) {
       if (search) {
         const line = getLineNumber(search, targetPath);
+        if (line === -1) {
+          // in traits
+          const newTargetPath = `${filePath}/Traits/CommonTrait.php`;
+          const newLine = getLineNumber(search, newTargetPath);
+          if (newLine > -1) {
+            return { line: newLine, newTargetPath: newTargetPath, targetPath };
+          }
+        }
         return { line, targetPath };
       }
       return { targetPath };
@@ -61,7 +75,7 @@ export function getFilePath(text: string, document: TextDocument, type: string, 
  * @param text example bar
  * @param path
  */
-export function getLineNumber(text: string, path: string) {
+function getLineNumber(text: string, path: string) {
     let file = new readLine(path);
     let lineNum = 0;
     let line: any;
@@ -77,6 +91,26 @@ export function getLineNumber(text: string, path: string) {
     return -1;
 }
 
+function findInDir(dir: string, text: string) {
+  const files = fs.readdirSync(dir);
+  for (const filename of files) {
+    const targetPath = `${dir}/${filename}`;
+    if (fs.existsSync(targetPath)) {
+      let file = new readLine(`${dir}/${filename}`);
+      let lineNum = 0;
+      let line: any;
+      while (line = file.next()) {
+          lineNum++;
+          line = line.toString();
+          if (line.indexOf(`'${text}'`) !== -1 || line.indexOf(`"${text}"`) !== -1) {
+            return { line: lineNum, targetPath };
+          }
+      }
+    }
+  }
+  return null;
+}
+
 export const VIEW_REG = /app-\>render\((['"])[^'"]*\1/g;
 
 export const HTML_REG = /(['"])[^'"]*\.[html|css|js][^'"]*\1/g;
@@ -84,3 +118,7 @@ export const HTML_REG = /(['"])[^'"]*\.[html|css|js][^'"]*\1/g;
 export const MODEL_KEY_REG = /app\[(['"])m\.[^'"]*\1/g;
 
 export const MODEL_ORM_KEY_REG = /app\[(['"])orm\.[^'"]*\1/g;
+
+export const ROUTER_PHP_REG = /app-\>path\((['"])[^'"]*|app-\>url\((['"])[^'"]*\1/g;
+
+export const ROUTER_HTML_REG = /app\.path\((['"])[^'"]*|app\.url\((['"])[^'"]*\1/g;

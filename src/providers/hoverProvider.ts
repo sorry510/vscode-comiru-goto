@@ -50,5 +50,26 @@ export default class HoverProvider implements vsHoverProvider {
         }
       }
     }
+
+    const routerResult = lineText.match(util.ROUTER_HTML_REG);
+    if (routerResult !== null) {
+      for (let item of routerResult) {
+          let prefixStr = '';
+          if (item.indexOf('app.path(') !== -1) {
+              prefixStr = 'app.path(';
+          } else if (item.indexOf('app.url(') !== -1) {
+              prefixStr = 'app.url(';
+          }
+          
+          const pathText = item.substring(prefixStr.length).replace(/\"|\'/g, ''); // 去除单双引号和前缀
+          let result = util.getFilePath(pathText, doc, 'router');
+
+          if (result !== null) {
+              const path = result.targetPath;
+              const filePosition = Uri.parse(`${path}#${result.line}`).toString();
+              return new Hover(new MarkdownString(`[comiru goto: ${pathText}](${filePosition})`));
+          };
+      }
+    }
   }
 }

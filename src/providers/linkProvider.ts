@@ -103,7 +103,7 @@ export default class LinkProvider implements vsDocumentLinkProvider {
 
                     const findIndex = lineText.indexOf(pathText) + pathText.length;
                     const methodText = lineText.substring(findIndex);
-                    const matchMethod = methodText.match(/]-\>(.+)\(/);
+                    const matchMethod = methodText.match(/]-\>(.+?)\(/);
                     let methodName = '';
                     if (matchMethod && matchMethod.length >= 2) {
                         methodName = matchMethod[1];
@@ -121,14 +121,13 @@ export default class LinkProvider implements vsDocumentLinkProvider {
                     let result: any = util.getFilePath(filename, doc, 'model', methodName);
 
                     if (result) {
-                        if (result.line && result.targetPath) {
-                            if (result.line > -1) {
-                                const methodFile = Uri.parse(`${result.targetPath}#${result.line}`);
-                                let start = new Position(line.lineNumber, lineText.indexOf(methodName));
-                                let end = start.translate(0, methodName.length);
-                                let documentLink = new DocumentLink(new Range(start, end), methodFile);
-                                documentLinks.push(documentLink);
-                            }
+                        if (result.line && result.line > -1) {
+                            const path = result.newTargetPath ? result.newTargetPath : result.targetPath;
+                            const methodFile = Uri.parse(`${path}#${result.line}`);
+                            let start = new Position(line.lineNumber, lineText.indexOf(methodName));
+                            let end = start.translate(0, methodName.length);
+                            let documentLink = new DocumentLink(new Range(start, end), methodFile);
+                            documentLinks.push(documentLink);
                         }
                         let start = new Position(line.lineNumber, lineText.indexOf(item) + prefixStr.length - 2);
                         let end = start.translate(0, pathText.length + 2);
@@ -175,6 +174,31 @@ export default class LinkProvider implements vsDocumentLinkProvider {
                     };
                 }
             }
+
+            const routerResult = lineText.match(util.ROUTER_PHP_REG);
+            if (routerResult !== null) {
+                for (let item of routerResult) {
+                    let prefixStr = '';
+                    if (item.indexOf('app->path(') !== -1) {
+                        prefixStr = 'app->path(';
+                    } else if (item.indexOf('app->url(') !== -1) {
+                        prefixStr = 'app->url(';
+                    }
+                    
+                    const pathText = item.substring(prefixStr.length).replace(/\"|\'/g, ''); // 去除单双引号和前缀
+                    let result = util.getFilePath(pathText, doc, 'router');
+
+                    if (result !== null) {
+                        const path = result.targetPath;
+                        const filePosition = Uri.parse(`${path}#${result.line}`);
+                        let start = new Position(line.lineNumber, lineText.indexOf(item) + prefixStr.length);
+                        let end = start.translate(0, pathText.length);
+                        let documentLink = new DocumentLink(new Range(start, end),filePosition);
+                        documentLinks.push(documentLink);
+                    };
+                }
+            }
+
             index++;
         }
 
