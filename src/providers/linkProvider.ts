@@ -191,7 +191,27 @@ export default class LinkProvider implements vsDocumentLinkProvider {
                     if (result !== null) {
                         const path = result.targetPath;
                         const filePosition = Uri.parse(`${path}#${result.line}`);
-                        let start = new Position(line.lineNumber, lineText.indexOf(item) + prefixStr.length);
+                        let start = new Position(line.lineNumber, lineText.indexOf(item) + prefixStr.length + 1);
+                        let end = start.translate(0, pathText.length);
+                        let documentLink = new DocumentLink(new Range(start, end),filePosition);
+                        documentLinks.push(documentLink);
+                    };
+                }
+            }
+
+            const middlewareResult = lineText.match(util.MIDDLEWARE_REG);
+            if (middlewareResult !== null) {
+                for (let item of middlewareResult) {
+                    const pathText = item.replace(/\"|\'/g, ''); // 去除单双引号和前缀
+                    let result = util.getFilePath(pathText, doc, 'middleware');
+
+                    if (result !== null) {
+                        let path = result.targetPath;
+                        if (result.line) {
+                            path = `${path}#${result.line}`;
+                        }
+                        const filePosition = Uri.parse(path);
+                        let start = new Position(line.lineNumber, lineText.indexOf(item) + 1);
                         let end = start.translate(0, pathText.length);
                         let documentLink = new DocumentLink(new Range(start, end),filePosition);
                         documentLinks.push(documentLink);

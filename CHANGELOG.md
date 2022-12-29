@@ -1,5 +1,7 @@
 # Change Log
 
+## 0.0.6
+- add middleware link
 ## 0.0.5
 - add router link
 ## 0.0.4

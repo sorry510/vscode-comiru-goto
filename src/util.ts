@@ -23,6 +23,7 @@ export function getFilePath(text: string, document: TextDocument, type: string, 
     'js': 'pathJs',
     'model': 'pathModel',
     'router': 'pathRouter',
+    'middleware': 'pathMiddleware',
   };
 
   if (!dirHash[type]) {
@@ -39,6 +40,35 @@ export function getFilePath(text: string, document: TextDocument, type: string, 
     if (type === 'router') {
       // 遍历路由文件夹
       return findInDir(filePath, text);
+    }
+
+    if (type === 'middleware') {
+      const [middleware, method = ''] = text.split(':');
+      const hasMapFile = workspaceFolder + '/src/App/Providers/AppServiceProvider.php';
+      if (fs.existsSync(hasMapFile)) {
+        let file = new readLine(hasMapFile);
+        let line: any;
+        while (line = file.next()) {
+            line = line.toString();
+            if (line.includes(middleware)) {
+              const result = line.match(/=> Middleware\\(.*)::class/);
+              if (result && result.length > 1) {
+                const fileName = result[1] + '.php';
+                let targetPath = `${filePath}/${fileName}`;
+                if (fs.existsSync(targetPath)) {
+                  if (method) {
+                    const line = getLineNumber(method, targetPath);
+                    if (line !== -1) {
+                      return { line, targetPath };
+                    }
+                  }
+                  return { targetPath };
+                }
+              }
+            }
+        }
+      }
+      return null;
     }
 
     if (text.startsWith('css')) {
@@ -122,3 +152,5 @@ export const MODEL_ORM_KEY_REG = /app\[(['"])orm\.[^'"]*\1/g;
 export const ROUTER_PHP_REG = /app-\>path\((['"])[^'"]*|app-\>url\((['"])[^'"]*\1/g;
 
 export const ROUTER_HTML_REG = /app\.path\((['"])[^'"]*|app\.url\((['"])[^'"]*\1/g;
+
+export const MIDDLEWARE_REG = /(['"])middleware\.[^'"]*\1/g;  // 'before' => ['middleware.before.domain_redirect:douga']
