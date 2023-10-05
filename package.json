@@ -2,7 +2,7 @@
   "name": "comiru-goto",
   "displayName": "comiru-goto",
   "description": "comiru-goto",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "publisher": "sorry510",
   "engines": {
     "vscode": "^1.51.0"
