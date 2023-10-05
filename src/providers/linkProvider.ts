@@ -22,6 +22,70 @@ export default class LinkProvider implements vsDocumentLinkProvider {
         while (index < linesCount) {
             const line = doc.lineAt(index);
             const lineText = line.text;
+            
+            // app di map
+            const appDiResult = lineText.match(util.APP_DI_REG);
+            if (appDiResult !== null) {
+                for (let item of appDiResult) {
+                    if (
+                        item.indexOf("app['m.") !== -1 ||
+                        item.indexOf("app['orm.") !== -1
+                    ) {
+                        continue;
+                    }
+                    const prefixStr = 'app[';
+                    const pathText = item.substring(prefixStr.length).replace(/\"|\'/g, ''); // 去除单双引号和前缀
+                    let result = util.getFilePath(pathText, doc, 'appDiMap');
+
+                    if (result) {
+                        let path = result.targetPath;
+                        if (result.methods) {
+                            for (const [method, methodLine] of Object.entries(result.methods)) {
+                                let searchWord = `->${method}(`;
+                                let startIndex = lineText.indexOf(searchWord);
+                                if (startIndex !== -1) {
+                                    let methodPath = `${path}#${methodLine}`;
+                                    const filePosition = Uri.parse(methodPath);
+                                    let start = new Position(line.lineNumber, startIndex + 2);
+                                    let end = start.translate(0, method.length);
+                                    let documentLink = new DocumentLink(new Range(start, end), filePosition);
+                                    documentLinks.push(documentLink);
+                                }
+                            }
+                        }
+                        if (result.line) {
+                            path = `${path}#${result.line}`;
+                        }
+                        const filePosition = Uri.parse(path);
+                        let start = new Position(line.lineNumber, lineText.indexOf(item) + prefixStr.length + 1);
+                        let end = start.translate(0, pathText.length);
+                        let documentLink = new DocumentLink(new Range(start, end),filePosition);
+                        documentLinks.push(documentLink);
+                    }
+                }
+            }
+            
+            // school map
+            const schoolResult = lineText.match(util.SCHOOL_REG);
+            if (schoolResult !== null) {
+                for (let item of schoolResult) {
+                    const prefixStr = 'school[';
+                    const pathText = item + ']'; // 去除单双引号和前缀
+                    let result = util.getFilePath(pathText, doc, 'schoolMap');
+
+                    if (result) {
+                        let path = result.targetPath;
+                        if (result.line) {
+                            path = `${path}#${result.line}`;
+                        }
+                        const filePosition = Uri.parse(path);
+                        let start = new Position(line.lineNumber, lineText.indexOf(item) - 1    );
+                        let end = start.translate(0, pathText.length);
+                        let documentLink = new DocumentLink(new Range(start, end),filePosition);
+                        documentLinks.push(documentLink);
+                    }
+                }
+            }
 
             const viewResult = lineText.match(util.VIEW_REG);
             if (viewResult !== null) {

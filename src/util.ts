@@ -16,6 +16,36 @@ const configurationNamespace = 'comiru_goto';
 export function getFilePath(text: string, document: TextDocument, type: string, search?: string) {
   const workspaceFolder = workspace.getWorkspaceFolder(document.uri)?.uri.fsPath || '';
   let strConfigPath = workspace.getConfiguration(configurationNamespace);
+  const appDiMap = strConfigPath.pathAppDiMap;
+  const schoolMap = strConfigPath.pathSchoolMap;
+  
+  // 先处理白名单
+  if (type === 'appDiMap') {
+    if (appDiMap[text]) {
+      if (typeof appDiMap[text] === 'string') {
+        let filePath = workspaceFolder + appDiMap[text];
+        return findInFile(filePath, `app['${text}']`, false);
+      } else {
+        const { path, methods } = appDiMap[text];
+        let targetPath = workspaceFolder + path;
+        return {
+          methods,
+          targetPath
+        };
+      }
+    }
+    return null;
+  } else if (type === 'schoolMap') {
+    if (schoolMap[text]) {
+      if (typeof schoolMap[text] === 'string') {
+        let filePath = workspaceFolder + schoolMap[text];
+        return findInFile(filePath, text, false);
+      } else {
+        
+      }
+    }
+    return null;
+  }
 
   const dirHash: any = {
     'view': 'pathViews',
@@ -121,24 +151,42 @@ function getLineNumber(text: string, path: string) {
     return -1;
 }
 
-function findInDir(dir: string, text: string) {
+function findInDir(dir: string, text: string, addMask = true): any {
   const files = fs.readdirSync(dir);
   for (const filename of files) {
     const targetPath = `${dir}/${filename}`;
-    if (fs.existsSync(targetPath)) {
-      let file = new readLine(`${dir}/${filename}`);
-      let lineNum = 0;
-      let line: any;
-      while (line = file.next()) {
-          lineNum++;
-          line = line.toString();
-          if (line.indexOf(`'${text}'`) !== -1 || line.indexOf(`"${text}"`) !== -1) {
-            return { line: lineNum, targetPath };
-          }
+    if (fs.statSync(targetPath).isDirectory()) {
+      var result = findInDir(targetPath, text);
+      if (result) {
+        return result;
+      }
+    } else if (fs.existsSync(targetPath)) {
+      var result = findInFile(targetPath, text, addMask);
+      if (result) {
+        return result;
       }
     }
   }
   return null;
+}
+
+function findInFile(path: string, text: string, addMask = true): any {
+  let file = new readLine(path);
+  let lineNum = 0;
+  let line: any;
+  while (line = file.next()) {
+    lineNum++;
+    line = line.toString();
+    if (addMask) {
+      if (line.indexOf(`'${text}'`) !== -1 || line.indexOf(`"${text}"`) !== -1) {
+        return { line: lineNum, targetPath: path };
+      }
+    } else {
+      if (line.indexOf(text) !== -1 || line.indexOf(text) !== -1) {
+        return { line: lineNum, targetPath: path };
+      }
+    }
+  }
 }
 
 export const VIEW_REG = /app-\>render\((['"])[^'"]*\1/g;
@@ -154,3 +202,7 @@ export const ROUTER_PHP_REG = /app-\>path\((['"])[^'"]*|app-\>url\((['"])[^'"]*\
 export const ROUTER_HTML_REG = /app\.path\((['"])[^'"]*|app\.url\((['"])[^'"]*\1/g;
 
 export const MIDDLEWARE_REG = /(['"])middleware\.[^'"]*\1/g;  // 'before' => ['middleware.before.domain_redirect:douga']
+
+export const APP_DI_REG = /app\[(['"])[^'"]*\1/g;
+
+export const SCHOOL_REG = /school\[(['"])[^'"]*\1/g;

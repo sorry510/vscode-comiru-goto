@@ -59,6 +59,172 @@
           "type": "string",
           "default": "/src/App/Http/Middleware",
           "description": "Root path to the middleware folder"
+        },
+        "comiru_goto.pathAppDiMap": {
+          "type": "object",
+          "default": {
+            "is_teacher_login": "/src/App/Silex/Filter.php",
+            "current_school": "/src/App/Silex/Filter.php",
+            "self_assigned_schools": "/src/App/Silex/Filter.php",
+            "enterprise_schools_in_self_manage": "/src/App/Silex/Filter.php",
+            "enterprise_info_change_confirm": "/src/App/Silex/Filter.php",
+            "is_enterprise_manager": "/src/App/Silex/Filter.php",
+            "is_enterprise_purchase": "/src/App/Silex/Filter.php",
+            "self_teacher": "/src/App/Silex/Filter.php",
+            "self_teacher_agreement": "/src/App/Silex/Filter.php",
+            "current_accounting_config": "/src/App/Silex/Filter.php",
+            "self_student": "/src/App/Silex/Filter.php",
+            "is_sub_student_login": "/src/App/Silex/Filter.php",
+            "common_account_switchable": "/src/App/Silex/Filter.php",
+            "is_student_login": "/src/App/Silex/Filter.php",
+            "siblings": "/src/App/Silex/Filter.php",
+            "enable_admin_permission": "/src/App/Silex/Filter.php",
+            "is_user_login": "/src/App/Silex/Filter.php",
+            "user_id": "/src/App/Silex/Filter.php",
+            "user": "/src/App/Silex/Filter.php",
+            "s.teacher_data": "/src/App/Silex/Filter.php",
+            "s.student_data": "/src/App/Silex/Filter.php",
+            "session.test": "/src/App/Silex/Filter.php",
+            "corporation": "/src/App/Silex/Filter.php",
+            "enable_admin_permission_ip": "/src/App/Silex/Filter.php",
+            "view_school_ids": "/src/App/Silex/Filter.php",
+            "config": "/src/bootstrap.local.php",
+            "teacher_permissions": "/src/app.php",
+            "hashids": {
+              "path": "/vendor/hashids/hashids/src/Hashids.php"
+            },
+            "request": {
+              "path": "/vendor/symfony/http-foundation/Request.php",
+              "methods": {
+                "create": 309,
+                "duplicate": 427,
+                "get": 717,
+                "getPathInfo": 881,
+                "getBasePath": 902,
+                "getBaseUrl": 921,
+                "getUri": 1072,
+                "getHost": 1203,
+                "getContent": 1478
+              }
+            },
+            "capsule": {
+              "path": "/vendor/illuminate/database/Capsule/Manager.php"
+            },
+            "queue": {
+              "path": "/src/App/Service/Queue/QueueManager.php"
+            },
+            "notification": {
+              "path": "/src/App/Service/Notifications/NotificationManager.php"
+            },
+            "bus": {
+              "path": "/src/App/Service/Bus/Dispatcher.php"
+            },
+            "params": {
+              "path": "/vendor/10mado/silexcane/src/Silexcane/Silex/Service/Params.php",
+              "methods": {
+                "import": 10
+              }
+            },
+            "sendgrid": {
+              "path": "/src/App/Service/SendGrid/SendGrid.php"
+            },
+            "messages": {
+              "path": "/vendor/10mado/silexcane/src/Silexcane/Silex/Service/Messages.php",
+              "methods": {
+                "add": 9,
+                "all": 14
+              }
+            },
+            "csrf_token": {
+              "path": "/vendor/10mado/silexcane/src/Silexcane/Silex/Service/CsrfToken.php",
+              "methods": {
+                "generate": 12,
+                "destroy": 20,
+                "verify": 25
+              }
+            },
+            "monolog": {
+              "path": "/vendor/monolog/monolog/src/Monolog/Logger.php",
+              "methods": {
+                "setHandlers": 205,
+                "addRecord": 286,
+                "close": 348,
+                "reset": 365,
+                "log": 474,
+                "debug": 489,
+                "info": 502,
+                "notice": 515,
+                "warning": 528,
+                "error": 541,
+                "critical": 554,
+                "alert": 567,
+                "emergency": 580
+              }
+            },
+            "logger": {
+              "path": "/vendor/monolog/monolog/src/Monolog/Logger.php",
+              "methods": {
+                "setHandlers": 205,
+                "addRecord": 286,
+                "close": 348,
+                "reset": 365,
+                "log": 474,
+                "debug": 489,
+                "info": 502,
+                "notice": 515,
+                "warning": 528,
+                "error": 541,
+                "critical": 554,
+                "alert": 567,
+                "emergency": 580
+              }
+            },
+            "session": {
+              "path": "/vendor/symfony/http-foundation/Session/Session.php",
+              "methods": {
+                "start": 69,
+                "has": 77,
+                "get": 85,
+                "set": 93,
+                "all": 101,
+                "replace": 109,
+                "remove": 117,
+                "clear": 125,
+                "isStarted": 133,
+                "invalidate": 161,
+                "migrate": 171,
+                "save": 179,
+                "getId": 187,
+                "getName": 203,
+                "setName": 211
+              }
+            }
+          },
+          "description": "app info map"
+        },
+        "comiru_goto.pathSchoolMap": {
+          "type": "object",
+          "default": {
+            "school['real_owner_teacher_id']": "/src/App/Silex/Controller.php",
+            "school['teachers']": "/src/App/Silex/Controller.php",
+            "school['teacher_ids']": "/src/App/Silex/Controller.php",
+            "school['can_manage']": "/src/App/Silex/Controller.php",
+            "school['unread_notification_count']": "/src/App/Silex/Controller.php",
+            "school['hr_plan']": "/src/App/Silex/Controller.php",
+            "school['is_hr_plan_enabled']": "/src/App/Silex/Controller.php",
+            "school['is_hr_plan_stopped']": "/src/App/Silex/Controller.php",
+            "school['is_contract_account']": "/src/App/Silex/Controller.php",
+            "school['is_hr_teacher']": "/src/App/Silex/Controller.php",
+            "school['is_teacher_douga_enabled']": "/src/App/Silex/Controller.php",
+            "school['is_connect_zoom_enabled']": "/src/App/Silex/Controller.php",
+            "school['is_using_invoice_request']": "/src/App/Silex/Controller.php",
+            "school['is_external_links_enable']": "/src/App/Silex/Controller.php",
+            "school['is_using_message_board']": "/src/App/Silex/Controller.php",
+            "school['is_using_corp_fc']": "/src/App/Silex/Controller.php",
+            "school['is_belong_klc_corporation']": "/src/App/Silex/Controller.php",
+            "school['is_using_invoice_item_setting']": "/src/App/Silex/Controller.php"
+          },
+          "description": "white map"
         }
       }
     }
