@@ -36,18 +36,19 @@ export default class LinkProvider implements vsDocumentLinkProvider {
                     const prefixStr = 'app[';
                     const pathText = item.substring(prefixStr.length).replace(/\"|\'/g, ''); // 去除单双引号和前缀
                     let result = util.getFilePath(pathText, doc, 'appDiMap');
-
+                    
                     if (result) {
                         let path = result.targetPath;
-                        if (result.methods) {
-                            for (const [method, methodLine] of Object.entries(result.methods)) {
-                                let searchWord = `->${method}(`;
-                                let startIndex = lineText.indexOf(searchWord);
-                                if (startIndex !== -1) {
+                        let methods = lineText.match(/>([a-zA-Z0-9]+)\(/g);
+                        if (methods) {
+                            for (let methodName of methods) {
+                                const methodLine = util.getLineNumber(methodName.slice(1, -1), path);
+                                if (methodLine !== -1) {
+                                    let startIndex = lineText.indexOf(methodName); // '>xxx('
                                     let methodPath = `${path}#${methodLine}`;
                                     const filePosition = Uri.parse(methodPath);
-                                    let start = new Position(line.lineNumber, startIndex + 2);
-                                    let end = start.translate(0, method.length);
+                                    let start = new Position(line.lineNumber, startIndex + 1);
+                                    let end = start.translate(0, methodName.length - 2);
                                     let documentLink = new DocumentLink(new Range(start, end), filePosition);
                                     documentLinks.push(documentLink);
                                 }
@@ -79,8 +80,8 @@ export default class LinkProvider implements vsDocumentLinkProvider {
                             path = `${path}#${result.line}`;
                         }
                         const filePosition = Uri.parse(path);
-                        let start = new Position(line.lineNumber, lineText.indexOf(item) - 1    );
-                        let end = start.translate(0, pathText.length);
+                        let start = new Position(line.lineNumber, lineText.indexOf(item) + prefixStr.length + 1);
+                        let end = start.translate(0, pathText.length - prefixStr.length - 3);
                         let documentLink = new DocumentLink(new Range(start, end),filePosition);
                         documentLinks.push(documentLink);
                     }

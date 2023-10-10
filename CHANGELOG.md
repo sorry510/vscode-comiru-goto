@@ -1,5 +1,7 @@
 # Change Log
 
+## 0.0.8
+- fixed $app['xxx']->method link
 ## 0.0.7
 - add $app['xxx'] link
 - add $school['xxx'] link

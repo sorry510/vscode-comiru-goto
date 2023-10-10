@@ -2,7 +2,7 @@
   "name": "comiru-goto",
   "displayName": "comiru-goto",
   "description": "comiru-goto",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "publisher": "sorry510",
   "engines": {
     "vscode": "^1.51.0"
@@ -94,18 +94,7 @@
               "path": "/vendor/hashids/hashids/src/Hashids.php"
             },
             "request": {
-              "path": "/vendor/symfony/http-foundation/Request.php",
-              "methods": {
-                "create": 309,
-                "duplicate": 427,
-                "get": 717,
-                "getPathInfo": 881,
-                "getBasePath": 902,
-                "getBaseUrl": 921,
-                "getUri": 1072,
-                "getHost": 1203,
-                "getContent": 1478
-              }
+              "path": "/vendor/symfony/http-foundation/Request.php"
             },
             "capsule": {
               "path": "/vendor/illuminate/database/Capsule/Manager.php"
@@ -120,84 +109,25 @@
               "path": "/src/App/Service/Bus/Dispatcher.php"
             },
             "params": {
-              "path": "/vendor/10mado/silexcane/src/Silexcane/Silex/Service/Params.php",
-              "methods": {
-                "import": 10
-              }
+              "path": "/vendor/10mado/silexcane/src/Silexcane/Silex/Service/Params.php"
             },
             "sendgrid": {
               "path": "/src/App/Service/SendGrid/SendGrid.php"
             },
             "messages": {
-              "path": "/vendor/10mado/silexcane/src/Silexcane/Silex/Service/Messages.php",
-              "methods": {
-                "add": 9,
-                "all": 14
-              }
+              "path": "/vendor/10mado/silexcane/src/Silexcane/Silex/Service/Messages.php"
             },
             "csrf_token": {
-              "path": "/vendor/10mado/silexcane/src/Silexcane/Silex/Service/CsrfToken.php",
-              "methods": {
-                "generate": 12,
-                "destroy": 20,
-                "verify": 25
-              }
+              "path": "/vendor/10mado/silexcane/src/Silexcane/Silex/Service/CsrfToken.php"
             },
             "monolog": {
-              "path": "/vendor/monolog/monolog/src/Monolog/Logger.php",
-              "methods": {
-                "setHandlers": 205,
-                "addRecord": 286,
-                "close": 348,
-                "reset": 365,
-                "log": 474,
-                "debug": 489,
-                "info": 502,
-                "notice": 515,
-                "warning": 528,
-                "error": 541,
-                "critical": 554,
-                "alert": 567,
-                "emergency": 580
-              }
+              "path": "/vendor/monolog/monolog/src/Monolog/Logger.php"
             },
             "logger": {
-              "path": "/vendor/monolog/monolog/src/Monolog/Logger.php",
-              "methods": {
-                "setHandlers": 205,
-                "addRecord": 286,
-                "close": 348,
-                "reset": 365,
-                "log": 474,
-                "debug": 489,
-                "info": 502,
-                "notice": 515,
-                "warning": 528,
-                "error": 541,
-                "critical": 554,
-                "alert": 567,
-                "emergency": 580
-              }
+              "path": "/vendor/monolog/monolog/src/Monolog/Logger.php"
             },
             "session": {
-              "path": "/vendor/symfony/http-foundation/Session/Session.php",
-              "methods": {
-                "start": 69,
-                "has": 77,
-                "get": 85,
-                "set": 93,
-                "all": 101,
-                "replace": 109,
-                "remove": 117,
-                "clear": 125,
-                "isStarted": 133,
-                "invalidate": 161,
-                "migrate": 171,
-                "save": 179,
-                "getId": 187,
-                "getName": 203,
-                "setName": 211
-              }
+              "path": "/vendor/symfony/http-foundation/Session/Session.php"
             }
           },
           "description": "app info map"

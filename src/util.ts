@@ -26,10 +26,10 @@ export function getFilePath(text: string, document: TextDocument, type: string, 
         let filePath = workspaceFolder + appDiMap[text];
         return findInFile(filePath, `app['${text}']`, false);
       } else {
-        const { path, methods } = appDiMap[text];
+        // di app object
+        const { path } = appDiMap[text];
         let targetPath = workspaceFolder + path;
         return {
-          methods,
           targetPath
         };
       }
@@ -135,7 +135,7 @@ export function getFilePath(text: string, document: TextDocument, type: string, 
  * @param text example bar
  * @param path
  */
-function getLineNumber(text: string, path: string) {
+export function getLineNumber(text: string, path: string) {
     let file = new readLine(path);
     let lineNum = 0;
     let line: any;
